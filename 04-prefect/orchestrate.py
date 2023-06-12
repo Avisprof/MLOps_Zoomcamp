@@ -127,6 +127,9 @@ def main_flow(
     mlflow.set_tracking_uri("sqlite:///mlflow.db")
     mlflow.set_experiment("nyc-taxi-experiment")
 
+    tracking_uri = mlflow.get_tracking_uri()
+    print("Current tracking uri: {}".format(tracking_uri))
+
     # Load
     df_train = read_data(train_path)
     df_val = read_data(val_path)
