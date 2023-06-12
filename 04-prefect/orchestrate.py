@@ -9,8 +9,7 @@ from sklearn.metrics import mean_squared_error
 import mlflow
 import xgboost as xgb
 from prefect import flow, task
-from os import walk
-
+import os
 
 @task(retries=3, retry_delay_seconds=2, name='read data')
 def read_data(filename: str) -> pd.DataFrame:
@@ -119,9 +118,10 @@ def main_flow(
 
     print(train_path)
     print(val_path)    
-    
-    for (dirpath, dirnames, filenames) in walk():
-        print(filenames)
+
+    files = [f for f in os.listdir('.') if os.path.isfile(f)]
+    for f in files:
+        print(f)
 
     # MLflow settings
     mlflow.set_tracking_uri("sqlite:///mlflow.db")
