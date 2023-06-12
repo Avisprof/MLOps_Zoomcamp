@@ -127,18 +127,6 @@ def train_best_model(
         )
     return None
 
-@task
-def send_message_by_email() -> None:
-    """Send Email with results of work"""
-    email_server_credentials = EmailServerCredentials.load("credentials")
-    email_send_message(
-        email_server_credentials=email_server_credentials,
-        subject=f"Script orhecstrate.py done",
-        msg=f"Successfully done script orhestatrate.py",
-        email_to=email_server_credentials.username,
-    )
-
-
 @flow(log_prints=True)
 def main_flow(
     train_path: str = "./data/green_tripdata_2021-01.parquet",
@@ -167,7 +155,13 @@ def main_flow(
     train_best_model(X_train, X_val, y_train, y_val, dv)
 
     # Email notification
-    send_message_by_email()
+    email_server_credentials = EmailServerCredentials.load("credentials")
+    email_send_message(
+        email_server_credentials=email_server_credentials,
+        subject=f"Script orhecstrate.py done",
+        msg=f"Successfully done script orhestatrate.py",
+        email_to=email_server_credentials.username,
+    )
 
 
 if __name__ == "__main__":
