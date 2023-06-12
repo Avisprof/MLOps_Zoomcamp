@@ -127,7 +127,7 @@ def train_best_model(
         )
     return None
 
-@flow
+@task
 def send_message_by_email() -> None:
     """Send Email with results of work"""
     email_server_credentials = EmailServerCredentials.load("credentials")
@@ -168,8 +168,6 @@ def main_flow(
 
     # Email notification
     send_message_by_email()
-
-
 
 
 if __name__ == "__main__":
