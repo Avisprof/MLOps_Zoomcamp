@@ -10,6 +10,7 @@ import mlflow
 import xgboost as xgb
 from prefect import flow, task
 from prefect.artifacts import create_markdown_artifact
+from prefect_email import EmailServerCredentials, email_send_message
 from datetime import date
 
 @task(retries=3, retry_delay_seconds=2, name='read data')
@@ -126,6 +127,17 @@ def train_best_model(
         )
     return None
 
+@flow
+def send_message_by_email() -> None:
+    """Send Email with results of work"""
+    email_server_credentials = EmailServerCredentials.load("credentials")
+    email_send_message(
+        email_server_credentials=email_server_credentials,
+        subject=f"Script orhecstrate.py done",
+        msg=f"Successfully done script orhestatrate.py",
+        email_to=email_server_credentials.username,
+    )
+
 
 @flow(log_prints=True)
 def main_flow(
@@ -153,6 +165,11 @@ def main_flow(
 
     # Train
     train_best_model(X_train, X_val, y_train, y_val, dv)
+
+    # Email notification
+    send_message_by_email()
+
+
 
 
 if __name__ == "__main__":
