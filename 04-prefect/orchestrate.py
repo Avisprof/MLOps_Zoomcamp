@@ -9,6 +9,7 @@ from sklearn.metrics import mean_squared_error
 import mlflow
 import xgboost as xgb
 from prefect import flow, task
+from os import walk
 
 
 @task(retries=3, retry_delay_seconds=2, name='read data')
@@ -109,12 +110,18 @@ def train_best_model(
     return None
 
 
-@flow
+@flow(log_prints=True)
 def main_flow(
     train_path: str = "./data/green_tripdata_2021-01.parquet",
     val_path: str = "./data/green_tripdata_2021-02.parquet",
 ) -> None:
     """The main training pipeline"""
+
+    print(train_path)
+    print(val_path)    
+    
+    for (dirpath, dirnames, filenames) in walk():
+        print(filenames)
 
     # MLflow settings
     mlflow.set_tracking_uri("sqlite:///mlflow.db")
